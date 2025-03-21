@@ -1,0 +1,275 @@
+<div class="card">
+    <p-table
+                #table
+                [value]="valueList"
+                [rows]="10"
+                [loading]="loading"
+                [paginator]="true"
+                [globalFilterFields]="['name', 'id', 'email', 'phone', 'last_name']"
+                (onPage)="onPageChange($event)"
+                [resizableColumns]="true"
+            >
+            
+            <ng-template pTemplate="caption">
+                <div class="table-caption">
+                    <button
+                        pButton
+                        label="Limpiar filtros"
+                        class="p-button-rounded p-button-raised mb-2"
+                        icon="pi pi-filter-slash"
+                        (click)="table.clear(); searchInput.value=''"
+                    ></button>
+                    <span class="p-input-icon-left mb-2">
+                        <i class="pi pi-search"></i>
+                        <input
+                            #searchInput
+                            type="text"
+                            pInputText
+                            placeholder="Buscar..."
+                            (input)="onInput(table, $event)"
+                        />
+                    </span>
+                    <span class="button-group">
+                        <button
+                            pButton
+                            label="Valor"
+                            icon="pi pi-plus"
+                            class="p-button-rounded p-button-raised mb-2"
+                            (click)="showForm()"
+                        ></button>
+                        <button
+                            pButton
+                            icon="pi pi-refresh"
+                            class="p-button-rounded p-button-raised mb-2"
+                            (click)="table.clear(); searchInput.value=''; loadNotes(1)"
+                        ></button>
+                    </span>
+                </div>
+            </ng-template>
+            
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="id" class="text-center">
+                        <p-sortIcon field="id" />
+                        Id
+                    </th>
+                    <th pSortableColumn="name" class="text-center">
+                        <p-sortIcon field="name" />
+                        Nombre
+                    </th>
+                    
+                    <th pSortableColumn="email" class="text-center">
+                        <p-sortIcon field="email" />
+                        Correo
+                    </th>
+                    
+                    <th pSortableColumn="phone" class="text-center">
+                        <p-sortIcon field="phone"/>
+                        Número de telefono
+                    </th>
+                    
+                    <th pSortableColumn="nationality" class="text-center">
+                        <p-sortIcon field="nationality" />
+                        Nacionalidad
+                    </th>
+                    
+                    <th pSortableColumn="actual_country" class="text-center">
+                        <p-sortIcon field="actual_country" />
+                        País actual
+                    </th>
+                    <th pSortableColumn="actual_location" class="text-center">
+                        <p-sortIcon field="actual_location" />
+                        Ubicación actual
+                    </th>
+                    <th pSortableColumn="provider_id" class="text-center">
+                        <p-sortIcon field="provider_id" />
+                        Es proveedor
+                    </th>
+                </tr>
+                
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <td class="text-center">
+                        {{item.id}}
+                    </td>
+                    <td class="text-center">
+                        {{item.name}}
+                    </td>
+                    <td class="text-center">
+                        {{item.email}}
+                    </td>
+                    <td class="text-center">
+                        {{item.phone}}
+                    </td>
+                    <td class="text-center">
+                        {{item.nationality}}
+                    </td>
+                    <td class="text-center">
+                        {{item.actual_country}}
+                    </td>
+                    <td class="text-center">
+                        {{item.actual_location}}
+                    </td>
+                    <td class="text-center">
+                        {{item.provider_id}}
+                    </td>
+                    <td>
+                        <span class="button-group">
+                            <button
+                                pButton
+                                icon="pi pi-pencil"
+                                class="p-button-rounded p-button-raised"
+                                pTooltip="Editar objeto"
+                                (click)="showForm(item)"
+                            ></button>
+                            <button
+                                pButton
+                                icon="pi pi-trash"
+                                class="p-button-rounded p-button-raised p-button-danger"
+                                pTooltip="Eliminar objeto"
+                                (click)="showDeletingForm(item)"
+                            ></button>
+                        </span>
+                    </td>
+                </tr>
+            </ng-template>
+            
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="7" class="text-center">
+                        No se ha encontrado ningún resultado.
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="loadingbody">
+                <tr>
+                    <td colspan="7" class="text-center">Cargando objetos...</td>
+                </tr>
+            </ng-template>
+    </p-table>
+    </div>
+
+<p-dialog
+#dialog
+[header]="selectedItem ? 'Editar usuario' :'Crear usuario'"
+[modal]="true"
+[style]="{ width: '70vw' }"
+[(visible)]="formVisible"
+[draggable]="false"
+[resizable]="false"
+(onHide)="resetForm()"
+>
+    
+    <form [formGroup]="form">
+        <div class="form-col">
+
+            
+            <label for="name">Nombre</label>
+            <br>
+            <input
+                pInputText
+                formControlName="name"
+                type="text"
+                label="Nombre"
+                />
+                <br>
+            <label for="last_name">Apellidos</label>
+            <br>
+            <input
+            pInputText
+            formControlName="last_name"
+            type="text"
+            label="Apellidos"
+            />
+            <br>
+            <label for="email">Correo electrónico</label>
+            <br>
+            <input
+                pInputText
+                formControlName="email"
+                type="email"
+                label="Correo electrónico"
+                />
+                <br>
+            <label for="phone">Número de teléfono</label>
+            <br>
+            
+            <input
+            pInputText
+            formControlName="phone"
+            type="phone"
+            label="Número de teléfono"
+            />
+            <br>
+            <label for="nationality">Nacionalidad</label>
+            <br>
+            <p-select
+                [showClear]="true"
+                [filter]="true"
+                filterBy="label"
+                [options]="nationalityOptions"
+                formControlName="nationality"
+                placeholder="Seleccione una nacionalidad"
+                optionLabel="label"
+                optionValue="value"
+            ></p-select>
+            <br>
+            <label for="actual_country">País actual</label>
+            <br>
+            <p-select
+                [showClear]="true"
+                [filter]="true"
+                filterBy="label"
+                [options]="nationalityOptions"
+                formControlName="actual_country"
+                placeholder="Seleccione un país"
+                optionLabel="label"
+                optionValue="value"
+            ></p-select>
+            <br>
+            <label for="actual_location">Localidad actual</label>
+            <br>
+            <input
+                pInputText
+                formControlName="actual_location"
+                type="text"
+                label="Localidad actual"
+                />
+                <br> 
+            <label for="description">Descripción</label>
+            <br>
+            <input
+            pInputText
+            formControlName="description"
+            type="text"
+            label="Descripción"
+            />
+            <br>
+            <label for="personal_url">Url personal</label>
+            <br>
+            <input
+                pInputText
+                formControlName="personal_url"
+                type="text"
+                label="Url personal"
+                />
+                
+            <br/>
+        </div>
+    </form>
+    <ng-template pTemplate="footer">
+        @if(loading){
+            <p-progressSpinner [style]="{width: '30px', height: '30px'}"/>
+        }
+        @if(!loading){
+            <button
+            pButton
+            class="p-button-success"
+            label="Enviar"
+            (click)="saveItem()"
+            ></button>
+        }
+    </ng-template>
+</p-dialog>
+        
